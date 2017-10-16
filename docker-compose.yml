@@ -1,10 +1,9 @@
-# Detail in file:
 version: '2'
-services:
+services: 
   laravel-shop:
-    image: laraedit/laraedit
-      ports:
-        - 80:80
-        - 3306:3306
-      volumes:
-        - .:/var/www/html/app
+    image: laraedit/laraedit 
+    ports:
+      - 80:80
+      - 3306:3306 
+    volumes:
+      - .:/var/www/html/app
