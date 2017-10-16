@@ -1,0 +1,13 @@
+// file: resources/assets/sass/pages/_welcome.scss
+// sass variables 
+$font-stack: Helvetica, sans-serif;
+$font-size: 10em;
+// sass styles
+.flex-center {
+  .content {
+    text-align: center;
+    .title {
+      font: $font-size $font-stack;
+    }
+  }
+}
