@@ -10,7 +10,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading clearfix">
                         <h4 class="pull-left">Product List</h4>
-                        <a href="#" class="btn btn-primary pull-right">Add new product</a>
+                        <a href="{{ url('/admin/product/create') }}" class="btn btn-primary pull-right">Add new product</a>
                     </div>
                     <div class="panel-body">
 
