@@ -36,7 +36,8 @@
                                     <td>
                                         <a href="{{ url('/admin/product/' . $product->id) }}" class="btn btn-warning">Edit</a>
                                         <form action="{{ url('/admin/product/' . $product->id) }}" method="post">
-                                            <input type="hidden" name="_method" value="DELETE">
+                                            {{ csrf_field() }}
+                                            {{ method_field('DELETE') }}
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>

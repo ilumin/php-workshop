@@ -118,6 +118,16 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::find($id);
+        if (!$product) {
+            abort(404, 'Product not exist.');
+        }
+
+        if ($product->thumbnail) {
+            Storage::delete($product->thumbnail);
+        }
+
+        $product->delete();
+        return redirect('/admin/product');
     }
 }
