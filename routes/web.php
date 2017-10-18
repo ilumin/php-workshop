@@ -12,6 +12,7 @@
 */
 
 Route::get('/', 'ShopController@listProduct');
+Route::get('/product/{id}', 'ShopController@showProduct');
 
 Auth::routes();
 
