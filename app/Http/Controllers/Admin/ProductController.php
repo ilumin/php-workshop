@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Models\Product;
 use function dump;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -36,12 +37,22 @@ class ProductController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
+     * @param Product                   $product
+     *
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Product $product)
     {
-        dump($request);
+        $product->name = $request->get('name');
+        $product->detail = $request->get('detail');
+        $product->price = $request->get('price');
+        $thumbnail = $request->file('thumbnail', false);
+        if ($thumbnail) {
+            $product->thumbnail = $thumbnail->store('thumbnail', 'public');
+        }
+        $product->save();
+        return redirect('/admin/product');
     }
 
     /**
