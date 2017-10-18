@@ -18,5 +18,8 @@
             @endforeach
 
         </div>
+        <div class="row">
+            <div class="center-block text-center">{{ $products->links() }}</div>
+        </div>
     </div>
 @endsection
