@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property mixed        name
- * @property mixed        detail
+ * @property mixed        shopping_cart_id
+ * @property mixed        product_id
  * @property mixed        price
- * @property false|string thumbnail
+ * @property mixed        qty
+ * @property mixed        total
  */
 class ShoppingCartItem extends Model
 {
