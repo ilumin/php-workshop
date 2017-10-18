@@ -4,20 +4,20 @@
 @section('content')
     <div class="container">
         <ol class="breadcrumb">
-            <li><a href="#">Home</a></li>
-            <li class="active">name</li>
+            <li><a href="{{ url('/') }}">Home</a></li>
+            <li class="active">{{ $product->name }}</li>
         </ol>
         <div class="row">
             <div class="col-sm-6 col-md-6">
                 <div class="thumbnail">
-                    <img src="thumbnail" alt="name">
+                    <img src="{{ Storage::url($product->thumbnail) }}" alt="{{ $product->name }}">
                 </div>
             </div>
             <div class="col-sm-6 col-md-6">
                 <div class="panel panel-default">
-                    <h2 class="panel-heading">name</h2>
+                    <h2 class="panel-heading">{{ $product->name }}</h2>
                     <div class="panel-body">
-                        Price: price
+                        <h4>Price: {{ $product->price }} THB</h4>
                         <form action="#" method="post">
                             <div class="input-group">
                                 <select class="form-control">
@@ -36,7 +36,7 @@
                 </div>
                 <div class="panel panel-default">
                     <div class="panel-heading">Detail</div>
-                    <div class="panel-body">detail</div>
+                    <div class="panel-body">{{ $product->detail }}</div>
                 </div>
             </div>
         </div>
