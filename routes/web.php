@@ -13,6 +13,7 @@
 
 Route::get('/', 'ShopController@listProduct');
 Route::get('/product/{id}', 'ShopController@showProduct');
+Route::post('/cart/add-item', 'ShoppingCartController@addItem');
 
 Auth::routes();
 

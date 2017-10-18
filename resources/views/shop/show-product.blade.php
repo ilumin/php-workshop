@@ -18,15 +18,18 @@
                     <h2 class="panel-heading">{{ $product->name }}</h2>
                     <div class="panel-body">
                         <h4>Price: {{ $product->price }} THB</h4>
-                        <form action="#" method="post">
+                        <form action="{{ url('/cart/add-item') }}" method="post">
+                            {{ csrf_field() }}
                             <div class="input-group">
-                                <select class="form-control">
+                                <select class="form-control" name="qty">
                                     <option>1</option>
                                     <option>2</option>
                                     <option>3</option>
                                     <option>4</option>
                                     <option>5</option>
                                 </select>
+                                <input type="hidden" name="product_id" value="{{ $product->id }}">
+                                <input type="hidden" name="price" value="{{ $product->price }}">
                                 <div class="input-group-btn">
                                     <button type="submit" class="btn btn-primary">Add to Cart</button>
                                 </div>
