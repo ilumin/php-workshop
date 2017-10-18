@@ -10,7 +10,7 @@
                 <div class="panel panel-default">
                     <div class="panel-heading">Product Form</div>
                     <div class="panel-body">
-                        <form action="" method="post">
+                        <form action="{{ action() }}" method="post" enctype="multipart/form-data">
                             <div class="form-group row">
                                 <label for="product-name" class="col-sm-2 col-form-label col-form-label-lg">Name</label>
                                 <div class="col-sm-10">
