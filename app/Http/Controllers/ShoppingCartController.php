@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
-use function dump;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function array_filter;
@@ -21,7 +20,7 @@ class ShoppingCartController extends Controller
 
     private function getShoppingCart($currentUserId)
     {
-        $this->shoppingCart = ShoppingCart::where('status', 'pending')->where('user_id', $currentUserId)->first();
+        $this->shoppingCart = ShoppingCart::where('status', 'pending')->where('user_id', $currentUserId)->with(['items.product'])->first();
         if (!$this->shoppingCart) {
             $this->shoppingCart = new ShoppingCart();
             $this->shoppingCart->user_id = $currentUserId;
