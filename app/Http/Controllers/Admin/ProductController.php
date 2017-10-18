@@ -66,19 +66,26 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::find($id);
+        return view('admin.product.form', [
+            'product' => $product,
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request $request
+     * @param  int                      $id
+     *
      * @return \Illuminate\Http\Response
+     * @internal param Product $product
+     *
      */
     public function update(Request $request, $id)
     {
-        //
+        dump($id);
+        dump($request);
     }
 
     /**
