@@ -22,19 +22,23 @@
                             </tr>
                             </thead>
                             <tbody>
+                            @foreach($products as $product)
                                 <tr>
-                                    <td>id</td>
-                                    <td>thumbnail</td>
-                                    <td>name</td>
-                                    <td>price</td>
+                                    <td>{{ $product->id }}</td>
                                     <td>
-                                        <a href="#" class="btn btn-warning">Edit</a>
-                                        <form action="#" method="post">
+                                        <img src="{{ Storage::url($product->thumbnail) }}" class="img-responsive thumbnail">
+                                    </td>
+                                    <td>{{ $product->name }}</td>
+                                    <td>{{ $product->price }}</td>
+                                    <td>
+                                        <a href="{{ url('/admin/product/' . $product->id) }}" class="btn btn-warning">Edit</a>
+                                        <form action="{{ url('/admin/product/' . $product->id) }}" method="post">
                                             <input type="hidden" name="_method" value="DELETE">
                                             <button type="submit" class="btn btn-danger">Delete</button>
                                         </form>
                                     </td>
                                 </tr>
+                            @endforeach
                             </tbody>
                         </table>
 
