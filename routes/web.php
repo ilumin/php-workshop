@@ -25,4 +25,4 @@ Route::get('/admin/product/create', 'Admin\ProductController@create');
 Route::post('/admin/product', 'Admin\ProductController@store');
 Route::get('/admin/product/{id}', 'Admin\ProductController@edit');
 Route::post('/admin/product/{id}', 'Admin\ProductController@update');
-Route::delete('/admin/product/{id}', 'Admin\ProductController@update');
+Route::delete('/admin/product/{id}', 'Admin\ProductController@destroy');
