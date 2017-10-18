@@ -18,7 +18,7 @@
                     </div>
                     <div class="panel-body">
 
-                        @if($shoppingCart->items)
+                        @if(count($shoppingCart->items) > 0)
                             <table class="table table-hover table-condensed table-striped">
                                 <thead>
                                 <tr>
@@ -49,7 +49,8 @@
                                 </tr>
                                 <tr>
                                     <td colspan="5">
-                                        <form action="#" method="post" class="clearfix">
+                                        <form action="{{ url('/cart/checkout') }}" method="post" class="clearfix">
+                                            {{ csrf_field() }}
                                             <button type="submit" class="btn btn-primary pull-right">Checkout</button>
                                         </form>
                                     </td>
@@ -57,7 +58,7 @@
                                 </tfoot>
                             </table>
                         @else
-                            <div class="panel-info">no item</div>
+                            <div class="text-center">no item in shopping cart</div>
                         @endif
                     </div>
                 </div>

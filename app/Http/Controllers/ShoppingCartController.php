@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use function abort;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use Illuminate\Http\Request;
@@ -107,5 +108,18 @@ class ShoppingCartController extends Controller
         return view('shopping-cart.detail', [
             'shoppingCart' => $this->shoppingCart
         ]);
+    }
+
+    public function checkout(Request $request)
+    {
+        $currentUserId = Auth::user()->id;
+        $this->getShoppingCart($currentUserId);
+        if (!$this->shoppingCartHasItems()) {
+            abort('403', 'Cannot checkout empty shopping cart.');
+        }
+
+        $this->shoppingCart->status = 'checkout';
+        $this->shoppingCart->save();
+        return view('shopping-cart.thankyou');
     }
 }
