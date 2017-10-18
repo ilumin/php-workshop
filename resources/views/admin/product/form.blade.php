@@ -39,7 +39,7 @@
                                 <div class="col-md-2"></div>
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="#">Cancel</a>
+                                    <a href="#" class="btn btn-default">Cancel</a>
                                 </div>
                             </div>
                         </form>
