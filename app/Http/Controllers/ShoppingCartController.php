@@ -100,4 +100,13 @@ class ShoppingCartController extends Controller
 
         return redirect('/cart');
     }
+
+    public function showDetail(Request $request)
+    {
+        $currentUserId = Auth::user()->id;
+        $this->getShoppingCart($currentUserId);
+        return view('shopping-cart.detail', [
+            'shoppingCart' => $this->shoppingCart
+        ]);
+    }
 }
