@@ -8,7 +8,9 @@
         <div class="row">
             <div class="col-md-8 col-md-offset-2">
                 <div class="panel panel-default">
-                    <div class="panel-heading">Product Form</div>
+                    <div class="panel-heading clearfix">
+                        <h4 class="pull-left">Product Form</h4>
+                    </div>
                     <div class="panel-body">
                         <form action="" method="post" enctype="multipart/form-data">
                             <div class="form-group row">
