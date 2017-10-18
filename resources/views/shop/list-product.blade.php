@@ -12,7 +12,7 @@
                     <img src="{{ Storage::url($product->thumbnail) }}" alt="{{ $product->name }}">
                     <div class="caption">
                         <h3>{{ $product->name }}</h3>
-                     /div>
+                    </div>
                 </a>
             </div>
             @endforeach
