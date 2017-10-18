@@ -15,6 +15,7 @@ class CreateShoppingCartsTable extends Migration
     {
         Schema::create('shopping_carts', function (Blueprint $table) {
             $table->increments('id');
+            $table->integer('user_id');
             $table->float('total');
             $table->enum('status', ['pending', 'checkout'])->default('pending');
             $table->timestamps();
