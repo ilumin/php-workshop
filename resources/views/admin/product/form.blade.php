@@ -12,7 +12,8 @@
                         <h4 class="pull-left">Product Form</h4>
                     </div>
                     <div class="panel-body">
-                        <form action="" method="post" enctype="multipart/form-data">
+                        <form action="{{ url('/admin/product') }}" method="post" enctype="multipart/form-data">
+                            {{ csrf_field() }}
                             <div class="form-group row">
                                 <label for="product-name" class="col-sm-2 col-form-label col-form-label-lg">Name</label>
                                 <div class="col-sm-10">
@@ -41,7 +42,7 @@
                                 <div class="col-md-2"></div>
                                 <div class="col-sm-10">
                                     <button type="submit" class="btn btn-primary">Save</button>
-                                    <a href="#" class="btn btn-default">Cancel</a>
+                                    <a href="{{ url('/admin/product') }}" class="btn btn-default">Cancel</a>
                                 </div>
                             </div>
                         </form>
