@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use function abort;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
+use function array_pull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function array_filter;
@@ -116,6 +119,22 @@ class ShoppingCartController extends Controller
         $this->getShoppingCart($currentUserId);
         if (!$this->shoppingCartHasItems()) {
             abort('403', 'Cannot checkout empty shopping cart.');
+        }
+
+        $order = new Order();
+        $order->user_id = $this->shoppingCart->user_id;
+        $order->shopping_cart_id = $this->shoppingCart->id;
+        $order->total = $this->shoppingCart->total;
+        $order->save();
+
+        foreach ($this->shoppingCart->items as $shoppingCartItem) {
+            $orderItem = new OrderItem();
+            $orderItem->order_id = $order->id;
+            $orderItem->product_id = $shoppingCartItem->product_id;
+            $orderItem->price = $shoppingCartItem->price;
+            $orderItem->qty = $shoppingCartItem->qty;
+            $orderItem->total = $shoppingCartItem->total;
+            $orderItem->save();
         }
 
         $this->shoppingCart->status = 'checkout';

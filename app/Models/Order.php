@@ -6,9 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Order
- * @property mixed        user_id
- * @property mixed        shopping_cart_id
- * @property mixed        total
+ * @property mixed       user_id
+ * @property mixed       shopping_cart_id
+ * @property mixed       total
  * @package App\Models
  */
 class Order extends Model
