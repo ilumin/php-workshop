@@ -17,7 +17,7 @@ class Order extends Model
 
     public function items()
     {
-        return $this->hasMany('Admin\Models\OrderItem');
+        return $this->hasMany('App\Models\OrderItem');
     }
 
     public function user()

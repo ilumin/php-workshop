@@ -30,4 +30,3 @@ Route::post('/admin/product/{id}', 'Admin\ProductController@update');
 Route::delete('/admin/product/{id}', 'Admin\ProductController@destroy');
 
 Route::get('/admin/order', 'Admin\OrderController@index');
-Route::get('/admin/order/{id}', 'Admin\OrderController@showDetail');
