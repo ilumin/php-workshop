@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use function abort;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Product;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItem;
 use function array_pull;
@@ -15,90 +16,87 @@ use function count;
 
 class ShoppingCartController extends Controller
 {
-    private $shoppingCart;
 
     public function __construct()
     {
         $this->middleware('auth');
     }
 
-    private function getShoppingCart($currentUserId)
-    {
-        $this->shoppingCart = ShoppingCart::where('status', 'pending')->where('user_id', $currentUserId)->with(['items.product'])->first();
-        if (!$this->shoppingCart) {
-            $this->shoppingCart = new ShoppingCart();
-            $this->shoppingCart->user_id = $currentUserId;
-            $this->shoppingCart->total = 0;
-            $this->shoppingCart->status = 'pending';
-            $this->shoppingCart->save();
-        }
-    }
-
-    private function shoppingCartHasProduct($productId)
-    {
-        return array_filter($this->shoppingCart->items->toArray(), function ($item) use ($productId) {
-            return $item['product_id'] === $productId;
-        });
-    }
-
-    private function shoppingCartHasItems()
-    {
-        return count($this->shoppingCart->items) > 0;
-    }
-
-    private function updateShoppingCartTotal($total)
-    {
-        $this->shoppingCart->total = $total;
-        $this->shoppingCart->save();
-    }
-
-    private function updateShoppingCartItem($item, $qty)
-    {
-        $item->qty += $qty;
-        $item->total = $item->price * $item->qty;
-        $item->save();
-    }
-
-    private function newShoppingCartItem($productId, $productPrice, $productQty)
-    {
-        $newItem = new ShoppingCartItem();
-        $newItem->shopping_cart_id = $this->shoppingCart->id;
-        $newItem->product_id = $productId;
-        $newItem->price = $productPrice;
-        $newItem->qty = $productQty;
-        $newItem->total = $newItem->price * $newItem->qty;
-        $newItem->save();
-        return $newItem;
-    }
-
     public function addItem(Request $request)
     {
-        $currentUserId = Auth::user()->id;
+        $userId = Auth::user()->id;
         $productId = (int) $request->get('product_id');
-        $productPrice = (float) $request->get('price', 0);
         $productQty = (int) $request->get('qty', 1);
 
-        $this->getShoppingCart($currentUserId);
+        // get product
+        $product = Product::find($productId);
+        if (!$product) {
+            abort(404, 'Product not found.');
+        }
 
-        if ($this->shoppingCartHasItems()) {
-            if ($this->shoppingCartHasProduct($productId)) {
+        // SELECT * FROM shopping_carts WHERE status = 'pending' AND user_id = $userId LIMIT 0, 1
+        $shoppingCart = ShoppingCart::where('status', 'pending')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$shoppingCart) {
+            $shoppingCart = new ShoppingCart();
+            $shoppingCart->user_id = $userId;
+            $shoppingCart->total = 0;
+            $shoppingCart->status = 'pending';
+            $shoppingCart->save();
+        }
+
+        // shopping cart has items ?
+        $shoppingCartItems = $shoppingCart->items;
+
+        if (count($shoppingCartItems) <= 0) {
+            $hasProduct = array_filter($shoppingCartItems->toArray(), function ($item) use ($product) {
+                return $item['product_id'] == $product->id;
+            });
+            if ($hasProduct) {
                 $totalPrice = 0;
-                foreach ($this->shoppingCart->items as $item) {
-                    if ($item->product_id === $productId) {
-                        $this->updateShoppingCartItem($item, $productQty);
+                foreach ($shoppingCartItems as $item) {
+                    if ($item->product_id == $product->id) {
+                        // update product qty and total price
+                        $item->qty += $productQty;
+                        $item->total = $item->price * $item->qty;
+                        $item->save();
                     }
                     $totalPrice += $item->total;
                 }
-                $this->updateShoppingCartTotal($totalPrice);
+
+                // update shopping cart total price
+                $shoppingCart->total = $totalPrice;
+                $shoppingCart->save();
             }
             else {
-                $newItem = $this->newShoppingCartItem($productId, $productPrice, $productQty);
-                $this->updateShoppingCartTotal($this->shoppingCart->total + $newItem->total);
+                // create new shopping cart item
+                $newItem = new ShoppingCartItem();
+                $newItem->shopping_cart_id = $shoppingCart->id;
+                $newItem->product_id = $product->id;
+                $newItem->price = $product->price;
+                $newItem->qty = $productQty;
+                $newItem->total = $newItem->price * $newItem->qty;
+                $newItem->save();
+
+                // update shopping cart total price
+                $shoppingCart->total += $newItem->total;
+                $shoppingCart->save();
             }
         }
         else {
-            $newItem = $this->newShoppingCartItem($productId, $productPrice, $productQty);
-            $this->updateShoppingCartTotal($this->shoppingCart->total + $newItem->total);
+            // create new shopping cart item
+            $newItem = new ShoppingCartItem();
+            $newItem->shopping_cart_id = $shoppingCart->id;
+            $newItem->product_id = $product->id;
+            $newItem->price = $product->price;
+            $newItem->qty = $productQty;
+            $newItem->total = $newItem->price * $newItem->qty;
+            $newItem->save();
+
+            // update shopping cart total price
+            $shoppingCart->total += $newItem->total;
+            $shoppingCart->save();
         }
 
         return redirect('/cart');
@@ -106,28 +104,44 @@ class ShoppingCartController extends Controller
 
     public function showDetail(Request $request)
     {
-        $currentUserId = Auth::user()->id;
-        $this->getShoppingCart($currentUserId);
+        $userId = Auth::user()->id;
+        $shoppingCart = ShoppingCart::where('status', 'pending')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$shoppingCart) {
+            $shoppingCart = new ShoppingCart();
+            $shoppingCart->user_id = $userId;
+            $shoppingCart->total = 0;
+            $shoppingCart->status = 'pending';
+            $shoppingCart->save();
+        }
         return view('shopping-cart.detail', [
-            'shoppingCart' => $this->shoppingCart
+            'shoppingCart' => $shoppingCart
         ]);
     }
 
     public function checkout(Request $request)
     {
-        $currentUserId = Auth::user()->id;
-        $this->getShoppingCart($currentUserId);
-        if (!$this->shoppingCartHasItems()) {
-            abort('403', 'Cannot checkout empty shopping cart.');
+        $userId = Auth::user()->id;
+        $shoppingCart = ShoppingCart::where('status', 'pending')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$shoppingCart) {
+            abort(403, 'Shopping cart not exists.');
+        }
+
+        $shoppingCartItems = $shoppingCart->items;
+        if (count($shoppingCartItems) <= 0) {
+            abort(403, 'Cannot checkout empty shopping cart.');
         }
 
         $order = new Order();
-        $order->user_id = $this->shoppingCart->user_id;
-        $order->shopping_cart_id = $this->shoppingCart->id;
-        $order->total = $this->shoppingCart->total;
+        $order->user_id = $shoppingCart->user_id;
+        $order->shopping_cart_id = $shoppingCart->id;
+        $order->total = $shoppingCart->total;
         $order->save();
 
-        foreach ($this->shoppingCart->items as $shoppingCartItem) {
+        foreach ($shoppingCartItems as $shoppingCartItem) {
             $orderItem = new OrderItem();
             $orderItem->order_id = $order->id;
             $orderItem->product_id = $shoppingCartItem->product_id;
@@ -137,8 +151,9 @@ class ShoppingCartController extends Controller
             $orderItem->save();
         }
 
-        $this->shoppingCart->status = 'checkout';
-        $this->shoppingCart->save();
+        $shoppingCart->status = 'checkout';
+        $shoppingCart->save();
+
         return view('shopping-cart.thankyou');
     }
 }
