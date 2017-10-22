@@ -41,7 +41,7 @@
                                         <td>
                                             <a href="{{ url('/product/' . $item->product->id) }}">{{ $item->product->name }}</a>
                                         </td>
-                                        <td>{{ $item->price }}</td>
+                                        <td>{{ money_format('%i', $item->price) }}</td>
                                         <td>
                                             <form action="{{ url('/cart/update-item') }}" method="post">
                                                 {{ csrf_field() }}
@@ -50,7 +50,7 @@
                                                 <button type="submit" class="btn btn-block btn-xs">Update</button>
                                             </form>
                                         </td>
-                                        <td>{{ $item->total }}</td>
+                                        <td>{{ money_format('%i', $item->total) }}</td>
                                         <td>
                                             <form action="{{ url('/cart/remove-item') }}" method="post">
                                                 {{ csrf_field() }}
@@ -65,7 +65,7 @@
                                 <tfoot>
                                 <tr>
                                     <td colspan="4">&nbsp;</td>
-                                    <td colspan="2">{{ $shoppingCart->total }}</td>
+                                    <td colspan="2">{{ money_format('%i', $shoppingCart->total) }} THB</td>
                                 </tr>
                                 <tr>
                                     <td colspan="6">

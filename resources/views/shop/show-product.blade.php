@@ -17,7 +17,7 @@
                 <div class="panel panel-default">
                     <h2 class="panel-heading">{{ $product->name }}</h2>
                     <div class="panel-body">
-                        <h4>Price: {{ $product->price }} THB</h4>
+                        <h4>Price: {{ money_format('%i', $product->price) }} THB</h4>
                         <form action="{{ url('/cart/add-item') }}" method="post">
                             {{ csrf_field() }}
                             <div class="input-group">
