@@ -217,6 +217,52 @@ class ShoppingCartController extends Controller
 
     public function removeItem(Request $request)
     {
-        //
+        $userId = Auth::user()->id;
+        $productId = $request->get('product_id');
+
+        // user has cart ?
+        $shoppingCart = ShoppingCart::where('status', 'pending')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$shoppingCart) {
+            abort(403, 'Shopping cart not exists.');
+        }
+
+        // product exists ?
+        $product = Product::find($productId);
+        if (!$product) {
+            abort(404, 'Product not found.');
+        }
+
+        // cart empty ?
+        $shoppingCartItems = $shoppingCart->items;
+        if (count($shoppingCartItems) <= 0) {
+            abort(403, 'Shopping cart are empty.');
+        }
+
+        // product already in cart ?
+        $hasProduct = array_filter($shoppingCartItems->toArray(), function ($item) use ($product) {
+            return $item['product_id'] == $product->id;
+        });
+        if (!$hasProduct) {
+            abort(403, 'Product not in cart.');
+        }
+
+        // remove product
+        $totalPrice = 0;
+        foreach ($shoppingCartItems as $item) {
+            if ($item->product_id == $product->id) {
+                $item->delete();
+            }
+            else {
+                $totalPrice += $item->total;
+            }
+        }
+
+        // update shopping cart total price
+        $shoppingCart->total = $totalPrice;
+        $shoppingCart->save();
+
+        return redirect('/cart');
     }
 }
