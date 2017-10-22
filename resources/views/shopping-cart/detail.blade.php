@@ -27,28 +27,48 @@
                                     <th class="col-sm-1">Price</th>
                                     <th class="col-sm-1">Qty</th>
                                     <th class="col-sm-1">Total</th>
+                                    <th class="col-sm-1">&nbsp;</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 @foreach($shoppingCart->items as $item)
                                     <tr>
                                         <td>
-                                            <img src="{{ Storage::url($item->product->thumbnail) }}" class="img-thumbnail img-responsive">
+                                            <a href="{{ url('/product/' . $item->product->id) }}">
+                                                <img src="{{ Storage::url($item->product->thumbnail) }}" class="img-thumbnail img-responsive">
+                                            </a>
                                         </td>
-                                        <td>{{ $item->product->name }}</td>
+                                        <td>
+                                            <a href="{{ url('/product/' . $item->product->id) }}">{{ $item->product->name }}</a>
+                                        </td>
                                         <td>{{ $item->price }}</td>
-                                        <td>{{ $item->qty }}</td>
+                                        <td>
+                                            <form action="{{ url('/cart/update') }}" method="post">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                                <input type="text" class="form-control" name="qty" value="{{ $item->qty }}">
+                                                <button type="submit" class="btn btn-block btn-xs">Update</button>
+                                            </form>
+                                        </td>
                                         <td>{{ $item->total }}</td>
+                                        <td>
+                                            <form action="{{ url('/cart/remove') }}" method="post">
+                                                {{ csrf_field() }}
+                                                <input type="hidden" name="product_id" value="{{ $item->product->id }}">
+                                                <input type="hidden" name="_method" value="DELETE">
+                                                <button type="submit" class="btn btn-block btn-danger btn-xs">Remove</button>
+                                            </form>
+                                        </td>
                                     </tr>
                                 @endforeach
                                 </tbody>
                                 <tfoot>
                                 <tr>
                                     <td colspan="4">&nbsp;</td>
-                                    <td>{{ $shoppingCart->total }}</td>
+                                    <td colspan="2">{{ $shoppingCart->total }}</td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5">
+                                    <td colspan="6">
                                         <form action="{{ url('/cart/checkout') }}" method="post" class="clearfix">
                                             {{ csrf_field() }}
                                             <button type="submit" class="btn btn-primary pull-right">Checkout</button>
