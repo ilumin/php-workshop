@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use function array_filter;
 use function count;
+use function redirect;
 
 class ShoppingCartController extends Controller
 {
@@ -155,5 +156,67 @@ class ShoppingCartController extends Controller
         $shoppingCart->save();
 
         return view('shopping-cart.thankyou');
+    }
+
+    public function updateItem(Request $request)
+    {
+        $userId = Auth::user()->id;
+        $productId = $request->get('product_id');
+        $productQty = (int) $request->get('qty');
+
+        if ($productQty <= 0) {
+            abort(403, 'Invalid qty');
+        }
+
+        // user has cart ?
+        $shoppingCart = ShoppingCart::where('status', 'pending')
+            ->where('user_id', $userId)
+            ->first();
+        if (!$shoppingCart) {
+            abort(403, 'Shopping cart not exists.');
+        }
+
+        // product exists ?
+        $product = Product::find($productId);
+        if (!$product) {
+            abort(404, 'Product not found.');
+        }
+
+        // cart empty ?
+        $shoppingCartItems = $shoppingCart->items;
+        if (count($shoppingCartItems) <= 0) {
+            abort(403, 'Shopping cart are empty.');
+        }
+
+        // product already in cart ?
+        $hasProduct = array_filter($shoppingCartItems->toArray(), function ($item) use ($product) {
+            return $item['product_id'] == $product->id;
+        });
+        if (!$hasProduct) {
+            abort(403, 'Product not in cart.');
+        }
+
+        // update product qty, total price
+        $totalPrice = 0;
+        foreach ($shoppingCartItems as $item) {
+            if ($item->product_id == $product->id) {
+                // update product qty and total price
+                $item->qty = $productQty;
+                $item->total = $item->price * $item->qty;
+                $item->save();
+            }
+            $totalPrice += $item->total;
+        }
+
+        // update shopping cart total price
+        $shoppingCart->total = $totalPrice;
+        $shoppingCart->save();
+
+        return redirect('/cart');
+    }
+
+    public function removeItem(Request $request)
+    {
+        //
     }
 }

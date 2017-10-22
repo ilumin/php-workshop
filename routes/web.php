@@ -16,6 +16,8 @@ Route::get('/product/{id}', 'ShopController@showProduct');
 Route::get('/cart', 'ShoppingCartController@showDetail');
 Route::post('/cart/add-item', 'ShoppingCartController@addItem');
 Route::post('/cart/checkout', 'ShoppingCartController@checkout');
+Route::post('/cart/update-item', 'ShoppingCartController@updateItem');
+Route::delete('/cart/remove-item', 'ShoppingCartController@removeItem');
 
 Auth::routes();
 
