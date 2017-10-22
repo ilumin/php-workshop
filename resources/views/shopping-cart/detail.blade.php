@@ -43,7 +43,7 @@
                                         </td>
                                         <td>{{ $item->price }}</td>
                                         <td>
-                                            <form action="{{ url('/cart/update') }}" method="post">
+                                            <form action="{{ url('/cart/update-item') }}" method="post">
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="product_id" value="{{ $item->product->id }}">
                                                 <input type="text" class="form-control" name="qty" value="{{ $item->qty }}">
@@ -52,7 +52,7 @@
                                         </td>
                                         <td>{{ $item->total }}</td>
                                         <td>
-                                            <form action="{{ url('/cart/remove') }}" method="post">
+                                            <form action="{{ url('/cart/remove-item') }}" method="post">
                                                 {{ csrf_field() }}
                                                 <input type="hidden" name="product_id" value="{{ $item->product->id }}">
                                                 <input type="hidden" name="_method" value="DELETE">
